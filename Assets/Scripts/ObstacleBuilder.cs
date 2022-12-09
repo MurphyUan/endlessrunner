@@ -11,7 +11,7 @@ public class ObstacleBuilder : MonoBehaviour
         Open, Blocked, Half
     }
 
-    ObstacleBuilder()
+    void Awake()
     {
         statedObstacles = new Dictionary<ObstacleState, List<Obstacle>>();
         foreach (ObstacleState state in Enum.GetValues(typeof(ObstacleState))){
@@ -37,8 +37,6 @@ public class ObstacleBuilder : MonoBehaviour
 
     public Obstacle[] BuildObstacleRow(Obstacle[] lastRow)
     {
-        List<Obstacle> list;
-
         return new Obstacle[]{};
     }
 
