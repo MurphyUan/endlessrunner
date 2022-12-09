@@ -4,13 +4,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
+public struct Obstacle 
+{
+    public GameObject prefab;
+    public ObstacleState state;
+    public int timesChanged;
+    public float length;
+}
+
+public enum ObstacleState
+{
+    Open, Blocked, Half
+}
+
 public class ObstacleBuilder : MonoBehaviour
 {
-    public enum ObstacleState
-    {
-        Open, Blocked, Half
-    }
-
+    
     void Awake()
     {
         statedObstacles = new Dictionary<ObstacleState, List<Obstacle>>();
@@ -22,36 +32,64 @@ public class ObstacleBuilder : MonoBehaviour
         }
     }
 
-    [Serializable]
-    public struct Obstacle 
-    {
-        public GameObject prefab;
-        public ObstacleState state;
-        public float length;
-    }
-
     [SerializeField]
     private Obstacle[] obstacles;
 
     private Dictionary<ObstacleState, List<Obstacle>> statedObstacles;
 
-    public Obstacle[] BuildObstacleRow(Obstacle[] lastRow)
+    public List<Obstacle> BuildObstacleRow(List<Obstacle> obstacles)
     {
-        return new Obstacle[]{};
+        foreach(Obstacle obstacle in obstacles)
+        {
+            var result = returnUpdatedState(obstacle);
+            if (result.Item1) SwapObstacle(obstacle, result.Item2);
+        }
+
+        return obstacles;
     }
 
-    private (ObstacleState, bool) returnUpdatedState(Obstacle obstacle){
+    private (bool, ObstacleState) returnUpdatedState(Obstacle obstacle)
+    {
+        bool shouldSwapState = CheckSwap(obstacle);
+        ObstacleState swappedState = obstacle.state;
+
         switch(obstacle.state){
             case ObstacleState.Open:{
-                break;
+                if(shouldSwapState) {
+                    // Choose between Half or Closed
+                    if(UnityEngine.Random.Range(0,2) == 0)
+                        swappedState = ObstacleState.Half;
+                    else 
+                        swappedState = ObstacleState.Blocked;
+                    return (true, swappedState);
+                } else
+                    return (false, swappedState);
             }
             case ObstacleState.Half:{
-                return (ObstacleState.Open, false);
+                swappedState = ObstacleState.Open;
+                return (true, swappedState);
             }
             case ObstacleState.Blocked:{
-                break;
+                if(shouldSwapState) {
+                    swappedState = ObstacleState.Open;
+                    return (true, swappedState);
+                } else
+                    return (false, swappedState);
             }
         }
-        return (ObstacleState.Open, false);
+        return (false, swappedState);
+    }
+
+    private bool CheckSwap(Obstacle obstacle)
+    {
+        int random = UnityEngine.Random.Range(0, 5);
+        return obstacle.timesChanged > random;
+    }
+
+    private void SwapObstacle(Obstacle obstacle, ObstacleState state) 
+    {
+        List<Obstacle> obstaclesOfState = statedObstacles[obstacle.state];
+        int index = UnityEngine.Random.Range(0, obstaclesOfState.Count);
+        obstacle = obstaclesOfState[index];
     }
 }
