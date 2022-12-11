@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerActionController : MonoBehaviour
 {
-    PlayerInput playerInput;
+    private static PlayerInput playerInput;
 
     private void Awake() {
         playerInput = GetComponent<PlayerInput>();

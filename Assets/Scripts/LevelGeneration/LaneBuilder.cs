@@ -19,6 +19,6 @@ public class LaneBuilder : MonoBehaviour
     }
 
     private static void ConstructLane(){
-
+        
     }
 }

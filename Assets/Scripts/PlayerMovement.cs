@@ -26,8 +26,8 @@ public class PlayerMovement : MonoBehaviour
     private static bool isJumping = false;
     private static bool isSliding = false;
 
-    private Coroutine slideCoroutine;
-    private Coroutine jumpCoroutine;
+    private static Coroutine slideCoroutine;
+    private static Coroutine jumpCoroutine;
 
     [SerializeField]
     private float cameraSlideAngle = 25;
@@ -46,7 +46,7 @@ public class PlayerMovement : MonoBehaviour
         PlayerBehaviour.Player.transform.Translate(velocity);
     }
 
-    public static void PlayerJump(InputAction.CallbackContext context)
+    public void PlayerJump(InputAction.CallbackContext context)
     {
         if(isJumping)return;
         else if(isSliding){
@@ -55,7 +55,7 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
         // Activate State
-        this.isJumping = true;
+        isJumping = true;
         playerActions.SwitchActions("Air");
         Debug.Log("Player Jumped, Action Map Air");
     }
@@ -71,7 +71,7 @@ public class PlayerMovement : MonoBehaviour
         slideCoroutine = StartCoroutine(DelayedCall(someDelay, PerformSlide));
     }
 
-    private static void PerformSlide()
+    private void PerformSlide()
     {
         int modifier = isSliding ? -1 : 1;
         cameraTransform.RotateAround(PlayerBehaviour.Player.transform.position, Vector3.right, modifier * cameraSlideAngle);

@@ -8,7 +8,7 @@ public class Phantom : MonoBehaviour
     private Phantom(){}
     static Phantom(){}
 
-    public static Phantom Instace 
+    public static Phantom Instance 
     {
         get{ return instance;}
     }
@@ -17,10 +17,4 @@ public class Phantom : MonoBehaviour
     {
         instance.transform.position += relPos;
     }
-
-    public static void RotatePhantom(Vector3 rotation)
-    {
-        instance.transform.Rotate(rotation);
-    }
-
 }
