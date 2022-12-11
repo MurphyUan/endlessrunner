@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    private PlayerInput playerInput;
+    PlayerActionController playerActions;
     private Rigidbody rb;
 
     [SerializeField]
@@ -23,9 +23,8 @@ public class PlayerMovement : MonoBehaviour
     private Transform cameraTransform;
     // private Animator animator;
 
-    private bool isJumping = false;
-    private bool isSliding = false;
-    private bool isTurning = false;
+    private static bool isJumping = false;
+    private static bool isSliding = false;
 
     private Coroutine slideCoroutine;
     private Coroutine jumpCoroutine;
@@ -35,32 +34,21 @@ public class PlayerMovement : MonoBehaviour
 
     void Awake()
     {
-        playerInput = GetComponent<PlayerInput>();
+        playerActions = GetComponent<PlayerActionController>();
         cameraTransform = Camera.main.transform;
         rb = GetComponent<Rigidbody>();
     }
 
-    void FixedUpdate()
-    {
-        try{
-            PlayerMove(playerInput.actions["Move"].ReadValue<Vector2>());
-            PlayerJump(playerInput.actions["Jump"].ReadValue<bool>());
-            PlayerSlide(playerInput.actions["Slide"].ReadValue<bool>());
-        } catch(UnityException e) {
-            Debug.Log(e.StackTrace);
-        }
-    }
-
-    private void PlayerMove(Vector2 velocity)
-    {
+    public static void PlayerMove(InputAction.CallbackContext context){
+        Vector2 velocity = context.ReadValue<Vector2>();
         if(velocity.normalized == Vector2.zero)return;
 
-        this.transform.Translate(velocity);
+        PlayerBehaviour.Player.transform.Translate(velocity);
     }
 
-    private void PlayerJump(bool activatedkey)
+    public static void PlayerJump(InputAction.CallbackContext context)
     {
-        if(!activatedkey || isJumping)return;
+        if(isJumping)return;
         else if(isSliding){
             StopCoroutine(slideCoroutine);
             PerformSlide();
@@ -68,32 +56,31 @@ public class PlayerMovement : MonoBehaviour
         }
         // Activate State
         this.isJumping = true;
-        playerInput.SwitchCurrentActionMap("Air");
-        
-        
+        playerActions.SwitchActions("Air");
+        Debug.Log("Player Jumped, Action Map Air");
     }
 
-    private void PlayerSlide(bool activatedkey)
+    public void PlayerSlide(InputAction.CallbackContext context)
     {
-        if(!activatedkey || isSliding  || isJumping) return;
-       
-       PerformSlide();
+        if (isSliding || isJumping) return;
 
-        //start coroutine to stop sliding after delay
+        PerformSlide();
+        Debug.Log("Player Sliding");
+
         float someDelay = 5f;
         slideCoroutine = StartCoroutine(DelayedCall(someDelay, PerformSlide));
     }
 
-    private void PerformSlide()
+    private static void PerformSlide()
     {
         int modifier = isSliding ? -1 : 1;
-        cameraTransform.RotateAround(this.transform.position, Vector3.right, cameraSlideAngle);
+        cameraTransform.RotateAround(PlayerBehaviour.Player.transform.position, Vector3.right, modifier * cameraSlideAngle);
         isSliding = !isSliding;
     }
 
-    private void EndJump()
+    public void EndJump(InputAction.CallbackContext context)
     {
-
+        // Apply Downwards Force until isJumping is false
     }
 
     private IEnumerator DelayedCall(float delay, Action action){
@@ -105,9 +92,9 @@ public class PlayerMovement : MonoBehaviour
         yield break;
     }
 
-    private void RotatePlayer(Vector3 rotation, Vector3 translation)
+    public void RotatePlayer(Vector3 rotation, Vector3 translation)
     {
-        if(isTurning)
+        if(PlayerBehaviour.CanTurn)
             this.transform.Rotate(rotation);
         else
             this.transform.Translate(translation);
@@ -118,7 +105,7 @@ public class PlayerMovement : MonoBehaviour
         switch(other.tag){
             case "Floor":{
                 isJumping = false;
-                playerInput.SwitchCurrentActionMap("Floor");
+                playerActions.SwitchActions("Ground");
                 break;
             }
             default:break;
