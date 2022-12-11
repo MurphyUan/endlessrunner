@@ -44,23 +44,35 @@ public class ObstaclePool : MonoBehaviour
         }
     }
 
-    public GameObject GetObstacleOfState(ObstacleState state)
+    public ObstacleWithInstances GetObstacleOfState(ObstacleState state)
     {
         List<ObstacleWithInstances> stateObstacles = StatedObstacles[state];
         Utils.Shuffle(stateObstacles);
-        foreach(GameObject localInstance in stateObstacles[0].Instances)
-        {
-            if(localInstance.activeInHierarchy) return localInstance;
-        }
-        return createNewObstacle(stateObstacles[0]);
+        return returnObstacle(stateObstacles[0]);
     }
 
-    private GameObject createNewObstacle(ObstacleWithInstances obstacle)
+    public ObstacleWithInstances GetObstacle(ObstacleItem item)
+    {
+        List<ObstacleWithInstances> stateObstacles = StatedObstacles[item.State];
+        ObstacleWithInstances obstacle = stateObstacles.Find(x => x.Item == item);
+        return returnObstacle(obstacle);
+    }
+
+    private ObstacleWithInstances returnObstacle(ObstacleWithInstances obstacle)
+    {
+        foreach(GameObject instance in obstacle.Instances)
+        {
+            if(instance.activeInHierarchy) return new ObstacleWithInstances(obstacle.Item, new List<GameObject>(){instance});
+        }
+        return createNewObstacle(obstacle);
+    }
+
+    private ObstacleWithInstances createNewObstacle(ObstacleWithInstances obstacle)
     {
         GameObject instance = Instantiate(obstacle.Item.Prefab);
         instance.transform.parent = Parent.transform;
         instance.SetActive(false);
         obstacle.Instances.Add(instance);
-        return instance;
+        return new ObstacleWithInstances(obstacle.Item, new List<GameObject>(){instance});
     }
 }

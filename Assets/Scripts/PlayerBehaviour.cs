@@ -9,8 +9,6 @@ public class PlayerBehaviour : MonoBehaviour
     public static GameObject Player;
     public static GameObject CurrentPlatform;
 
-    public static bool CanTurn = false;
-
     private void Awake() 
     {
         Player = this.gameObject;    
@@ -23,12 +21,8 @@ public class PlayerBehaviour : MonoBehaviour
     private void OnTriggerEnter(Collider other) 
     {
         switch(other.GetType().ToString()){
-            case "SphereCollider":{
-                CanTurn = true;
-                break;
-            }
             case "BoxCollider":{
-                LaneBuilder.BuildLane();
+                LaneBuilder.RunPhantom();
                 break;
             }
             case "CapsuleCollider":{
@@ -38,16 +32,4 @@ public class PlayerBehaviour : MonoBehaviour
             default:break;
         }
     }
-
-    private void OnTriggerExit(Collider other) {
-        switch(other.GetType().ToString()){
-            case "SphereCollider":{
-                CanTurn = false;
-                break;
-            }
-            default:break;
-        }    
-    }
-
-    
 }

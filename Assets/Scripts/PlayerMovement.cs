@@ -92,14 +92,6 @@ public class PlayerMovement : MonoBehaviour
         yield break;
     }
 
-    public void RotatePlayer(Vector3 rotation, Vector3 translation)
-    {
-        if(PlayerBehaviour.CanTurn)
-            this.transform.Rotate(rotation);
-        else
-            this.transform.Translate(translation);
-    }
-
     private void onColliderEnter(Collider other)
     {
         switch(other.tag){

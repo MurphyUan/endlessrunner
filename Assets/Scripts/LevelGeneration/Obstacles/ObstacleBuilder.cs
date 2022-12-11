@@ -4,32 +4,49 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObstacleBuilder : MonoBehaviour
+public class ObstacleRowBuilder : MonoBehaviour
 {
-    ObstaclePool obstacleDictionary;
 
-    private static ObstacleBuilder instance = new ObstacleBuilder();
-    private ObstacleBuilder(){}
-    static ObstacleBuilder(){}
+    public static ObstacleRowBuilder Singleton;
 
-    public static ObstacleBuilder Instance
+    #region StartUp Methods
+
+    private void Awake()
     {
-        get { return instance;}
+        Singleton = this;
     }
 
-    private void Awake() {
-        obstacleDictionary = ObstaclePool.Singleton;
+    #endregion
+
+    public static List<ObstacleItem> BuildRow(List<ObstacleItem> currentState)
+    {
+        return buildRow(currentState);
     }
 
-    public static ObstacleItem UpdateObstacle(ObstacleItem obstacle)
+    private static List<ObstacleItem> buildRow(List<ObstacleItem> currentState)
     {
-        if(obstacle.Length > obstacle.NumChange) return obstacle;
-        return new ObstacleItem();
+        if(currentState == null) return returnOpenRow(currentState.Count);
+
+        List<ObstacleItem> futureRow = new List<ObstacleItem>();
+
+        
+
+        return returnOpenRow(currentState.Count);
     }
 
-    private static (bool, ObstacleState) checkSwapState(ObstacleItem obstacle)
+    private static bool CheckSwap(ObstacleItem obstacle)
     {
-        return (false, ObstacleState.Open);
+        int random = UnityEngine.Random.Range(0, 5);
+        if(obstacle.Length < obstacle.NumChange) return false;
+        return obstacle.NumChange > random;
+    }
+
+    private static List<ObstacleItem> returnOpenRow(int length){
+        List<ObstacleItem> localArray = new List<ObstacleItem>();
+        for(int i = 0; i < length; i++){
+            localArray.Add(ObstaclePool.Singleton.GetObstacleOfState(ObstacleState.Open).Item);
+        }
+        return localArray;
     }
 
     #region Old Code

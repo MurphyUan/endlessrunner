@@ -4,21 +4,37 @@ using UnityEngine;
 
 public class LaneBuilder : MonoBehaviour
 {
-    [SerializeField] int NumberOfPlatforms = 10;
+    [SerializeField] private int NumberOfPlatforms = 15;
+    [SerializeField] private int NumberOfLanes = 3;
+    [SerializeField] private float LaneWidth = 2;
+    public static List<GameObject> LanePrefabs;
+
     public static GameObject Phantom;
-    public static bool PassedTurn;
+    public static LaneBuilder Singleton;
 
-    private void Awake(){
-        Phantom = new GameObject("phantom");
-    }
+    // State of Obstacles Stored here: 0 for Open/Half, 1 for Full
+    private ObstacleState[] laneMatrix;
+    private int maxMatrixLimit = 0;
 
-    public static void BuildLane()
+    #region StartUp Methods
+
+    private void Awake()
     {
-        Phantom = new GameObject();
-        ConstructLane();
+        Phantom = new GameObject("phantom");
+
+        laneMatrix = new ObstacleState[NumberOfLanes];
+        for(int i = 0; i < NumberOfLanes; i++)
+            maxMatrixLimit += (int)Mathf.Pow(2,i);
     }
 
-    private static void ConstructLane(){
-        
+    #endregion
+
+    public static void RunPhantom()
+    {
+
+    }
+
+    private static ObstacleState[] changeMatrix(){
+        return null;
     }
 }
