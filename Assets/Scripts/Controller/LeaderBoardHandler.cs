@@ -6,7 +6,12 @@ using TMPro;
 public class LeaderBoardHandler : MonoBehaviour
 {
     [SerializeField] private TMP_Text scores;
+
+    [SerializeField] private GameObject LeftArrow;
+    [SerializeField] private GameObject RightArrow;
+
     public List<string> levels;
+    private int levelIndex = 0;
 
     public static LeaderBoardHandler Singleton;
 
@@ -17,15 +22,34 @@ public class LeaderBoardHandler : MonoBehaviour
 
     private void Awake() {
         Singleton = this;
+        Debug.Log(Levels);
     }
 
-    public void UpdateScores(string levelName)
+    public void DisplayScores(int indexChange)
     {
-        scores.text = LeaderBoard.DisplayLevelEntries(levelName);
+        Debug.Log(levelIndex + indexChange);
+        if(levelIndex + indexChange >=  Levels.Count || levelIndex + indexChange < 0){
+            scores.text = "Level Does not Exist";
+            return;
+        }
+
+        levelIndex += indexChange;
+
+        if(levelIndex <= 0)
+            LeftArrow.SetActive(false);
+        else if (levelIndex > 0)
+            LeftArrow.SetActive(true);
+
+        if(levelIndex >= Levels.Count - 1)
+            RightArrow.SetActive(false);
+        else if(levelIndex < Levels.Count - 1)
+            RightArrow.SetActive(true);
+
+        scores.text = LeaderBoard.DisplayLevelEntries(Levels[levelIndex]);
     }
 }
 
-// Taken from previously completed project
+// Taken from previously completed project, altered to work with multiple levels
 public static class LeaderBoard
 {
     public const int numEntries = 10;
@@ -67,7 +91,10 @@ public static class LeaderBoard
 
     private static void LoadLevelEntries(string levelName)
     {
-        levelEntries.Clear();
+        if(!levelEntries.ContainsKey(levelName))
+            levelEntries.Add(levelName, new List<Entry>());
+        
+        levelEntries[levelName].Clear();
 
         for(int i = 0; i < numEntries; i++)
         {
@@ -103,7 +130,11 @@ public static class LeaderBoard
 
     public static string DisplayLevelEntries(string levelName)
     {
-        string value = "";
+        if(!LevelEntries.ContainsKey(levelName))
+            LoadLevelEntries(levelName);
+
+        string value = $"{levelName}\n";
+
         foreach(Entry entry in LevelEntries[levelName])
             value += entry.name + " - " + entry.score.ToString("000000000") + "\n";
         return value;

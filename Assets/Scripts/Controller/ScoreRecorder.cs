@@ -18,7 +18,7 @@ public class ScoreRecorder : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        scoreValue.text = "";
+        scoreValue.text = 0.ToString("000000000");
     }
 
     public void RecordScore() {

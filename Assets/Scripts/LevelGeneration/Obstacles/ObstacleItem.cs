@@ -11,14 +11,7 @@ public enum ObstacleState
 
 [Serializable]
 public class ObstacleItem : MonoBehaviour {
-    
     public GameObject Prefab;
     public ObstacleState State;
-    public int NumChange;
-    public float Length;
-
-    public void ResetArtifacts()
-    {
-        NumChange = 0;
-    }
+    public int Length;
 }

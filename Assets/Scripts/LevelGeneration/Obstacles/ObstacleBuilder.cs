@@ -18,50 +18,72 @@ public class ObstacleRowBuilder : MonoBehaviour
 
     #endregion
 
-    public static List<ObstacleItem> BuildRow(List<ObstacleItem> currentState)
+    public static List<ObstacleWithInstance> BuildRow(List<ObstacleItem> currentRow, int length)
     {
-        return buildRow(currentState);
+        return buildRow(currentRow, length);
     }
 
-    private static List<ObstacleItem> buildRow(List<ObstacleItem> currentState)
+    private static List<ObstacleWithInstance> buildRow(List<ObstacleItem> currentRow, int length)
     {
-        if(currentState == null) return returnOpenRow(currentState.Count);
+        if(currentRow == null) return returnOpenRow(length);
 
-        List<ObstacleItem> futureRow = new List<ObstacleItem>();
+        List<ObstacleItem> futureRow = new List<ObstacleItem>(currentRow);
+
+        int stateIndex = 0;
+        bool hasHalf = false;
+
+        foreach(ObstacleItem item in futureRow){
+            int index = item.State == ObstacleState.Full ? 1 : 0;
+            stateIndex += (int)Math.Pow(2, index);
+            if(item.State == ObstacleState.Half) hasHalf = true;
+        }
+
+        switch(stateIndex){
+            case 0:{
+                break;
+            }
+            case 1:{
+                break;
+            }
+            case 3:{
+                break;
+            }
+            default:{
+                break;
+            }
+        }
 
         
 
-        return returnOpenRow(currentState.Count);
+        return returnOpenRow(length);
+    }
+
+    private static List<ObstacleItem> GetNewStates(List<ObstacleItem> items)
+    {
+        return null;
+    }
+
+    private static bool TrySwap(bool state)
+    {
+
+        return state;
     }
 
     private static bool CheckSwap(ObstacleItem obstacle)
     {
-        int random = UnityEngine.Random.Range(0, 5);
-        if(obstacle.Length < obstacle.NumChange) return false;
-        return obstacle.NumChange > random;
+        int random = UnityEngine.Random.Range(0, 6);
+        return random > 1;
     }
 
-    private static List<ObstacleItem> returnOpenRow(int length){
-        List<ObstacleItem> localArray = new List<ObstacleItem>();
+    private static List<ObstacleWithInstance> returnOpenRow(int length){
+        List<ObstacleWithInstance> localArray = new List<ObstacleWithInstance>();
         for(int i = 0; i < length; i++){
-            localArray.Add(ObstaclePool.Singleton.GetObstacleOfState(ObstacleState.Open).Item);
+            localArray.Add(ObstaclePool.Singleton.GetObstacleOfState(ObstacleState.Open));
         }
         return localArray;
     }
 
     #region Old Code
-    // public static List<Obstacle> BuildObstacleRow(List<Obstacle> obstacles)
-    // {
-    //     foreach(Obstacle obstacle in obstacles)
-    //     {
-    //         var result = returnUpdatedState(obstacle);
-    //         if (result.Item1) 
-    //         {
-    //             SwapObstacle(obstacle, result.Item2);
-    //         }
-    //     }
-    //     return obstacles;
-    // }
 
     // private (bool, ObstacleState) returnUpdatedState(Obstacle obstacle)
     // {
@@ -94,21 +116,6 @@ public class ObstacleRowBuilder : MonoBehaviour
     //     }
     //     obstacle.sinceChange++;
     //     return (false, swappedState);
-    // }
-
-    // private bool CheckSwap(Obstacle obstacle)
-    // {
-    //     int random = UnityEngine.Random.Range(0, 5);
-    //     if(obstacle.length < obstacle.sinceChange) return false;
-    //     return obstacle.sinceChange > random;
-    // }
-
-    // private void SwapObstacle(Obstacle obstacle, ObstacleState state) 
-    // {
-    //     obstacle.sinceChange = 0;
-    //     List<Obstacle> obstaclesOfState = statedObstacles[obstacle.state];
-    //     int index = UnityEngine.Random.Range(0, obstaclesOfState.Count);
-    //     obstacle = obstaclesOfState[index];
     // }
     #endregion
 }
