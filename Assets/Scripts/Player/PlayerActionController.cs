@@ -6,51 +6,71 @@ using UnityEngine.InputSystem;
 public class PlayerActionController : MonoBehaviour
 {
     private static PlayerInput playerInput;
+    bool hasAwoken = false;
 
     private void Awake() {
         playerInput = GetComponent<PlayerInput>();
+        EnableActions(playerInput.defaultActionMap);
+        hasAwoken = true;
     }
 
     private void OnEnable() 
     {
-        EnableActions(playerInput.currentActionMap.ToString());
+        if(hasAwoken)
+        EnableActions(playerInput.currentActionMap.name);
     }
 
     private void OnDisable() 
     {
-        DisableActions(playerInput.currentActionMap.ToString());
+        DisableActions(playerInput.currentActionMap.name);
     }
 
-    private void DisableActions(string mapContext)
+    private static void DisableActions(string mapContext)
     {
         switch(mapContext) {
             case "Ground":{
-                playerInput.actions["Move"].performed += PlayerMovement.PlayerMove;
+                playerInput.actions["Jump"].performed -= PlayerMovement.PlayerJump;
+                playerInput.actions["Slide"].performed -= PlayerMovement.PlayerSlide;
                 break;
             }
             case "Air":{
+                playerInput.actions["EndJump"].performed -= PlayerMovement.EndJump;
                 break;
             }
-            default:break;
+            default:{
+                break;
+            }
         }
+
+        playerInput.actions["Move"].performed -= PlayerMovement.PlayerMove;
     }
 
-    private void EnableActions(string mapContext)
+    private static void EnableActions(string mapContext)
     {
         switch(mapContext) {
             case "Ground":{
+                Debug.Log($"{mapContext} Was Called");
+                playerInput.actions["Jump"].performed += PlayerMovement.PlayerJump;
+                playerInput.actions["Slide"].performed += PlayerMovement.PlayerSlide;
                 break;
             }
             case "Air":{
+                Debug.Log($"{mapContext} Was Called");
+                playerInput.actions["EndJump"].performed += PlayerMovement.EndJump;
                 break;
             }
-            default:break;
+            default:{
+                Debug.Log($"Switch Escaped with string:{mapContext}");
+                break;
+            }
         }
+
+        playerInput.actions["Move"].performed += PlayerMovement.PlayerMove;
     }
 
-    public void SwitchActions(string mapContext)
+    public static void SwitchActions(string mapContext)
     {
-        DisableActions(playerInput.currentActionMap.ToString());
+        DisableActions(playerInput.currentActionMap.name);
         playerInput.SwitchCurrentActionMap(mapContext);
         EnableActions(mapContext);
     }

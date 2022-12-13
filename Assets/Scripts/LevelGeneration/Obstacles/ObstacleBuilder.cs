@@ -11,7 +11,7 @@ public class ObstacleBuilder : MonoBehaviour
 
     private Dictionary<int, List<int>> rowStateChanges;
 
-    
+    private static System.Random random = new System.Random();
 
     #region StartUp Methods
 
@@ -63,16 +63,13 @@ public class ObstacleBuilder : MonoBehaviour
 
         foreach(char value in binaryState){
             switch(value){
-                case '0' when hasHalf:{
-                    System.Random random = new System.Random();
-                    if(random.Next(0, 5) == 4)
-                        listToBeReturned.Add(ObstaclePool.Singleton.GetObstacleOfState(ObstacleState.Half));
-                    else
-                        goto case '0';
-                    break;
-                }
                 case '0':{
-                    listToBeReturned.Add(ObstaclePool.Singleton.GetObstacleOfState(ObstacleState.Open));
+                    int nextValue = random.Next(0, 5);
+                    if(!hasHalf && nextValue >= 3){
+                        listToBeReturned.Add(ObstaclePool.Singleton.GetObstacleOfState(ObstacleState.Half));
+                    } else {
+                        listToBeReturned.Add(ObstaclePool.Singleton.GetObstacleOfState(ObstacleState.Open));
+                    }
                     break;
                 }
                 case '1':{

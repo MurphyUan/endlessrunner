@@ -8,6 +8,8 @@ public class ScoreRecorder : MonoBehaviour
     [SerializeField] private TMP_Text nameText;
     [SerializeField] private TMP_Text scoreValue;
 
+    private float timeValue = 0;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -19,6 +21,10 @@ public class ScoreRecorder : MonoBehaviour
     void Update()
     {
         scoreValue.text = 0.ToString("000000000");
+    }
+
+    private void FixedUpdate() {
+        timeValue += Time.fixedDeltaTime;
     }
 
     public void RecordScore() {

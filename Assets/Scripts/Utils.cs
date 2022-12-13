@@ -63,8 +63,7 @@ public static class Utils
     public static T GetRandomFromList<T>(this IList<T> list)
     {
         int n = list.Count;
-        System.Random r = new System.Random();
-        int k = r.Next(0, n - 1);
+        int k = r.Next(0, n);
         return list[k];
     }
 }

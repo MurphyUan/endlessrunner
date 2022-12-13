@@ -8,7 +8,7 @@ public class Deactivate : MonoBehaviour
     bool deactiveScheduled = false;
 
     private void LateUpdate() {
-        if(transform.position.z == -1 && gameObject.activeInHierarchy && !deactiveScheduled)
+        if(this.transform.position.z <= -1 && gameObject.activeInHierarchy && !deactiveScheduled)
         {
             Invoke("DeactivateObject", 1.5f);
             deactiveScheduled = true;

@@ -59,8 +59,7 @@ public class ObstaclePool : MonoBehaviour
     public ObstacleWithInstance GetObstacleOfState(ObstacleState state)
     {
         List<ObstacleWithInstances> stateObstacles = StatedObstacles[state];
-        Utils.Shuffle(stateObstacles);
-        return returnObstacle(stateObstacles[0]);
+        return returnObstacle(Utils.GetRandomFromList(stateObstacles));
     }
 
     public ObstacleWithInstance GetObstacle(ObstacleItem item)

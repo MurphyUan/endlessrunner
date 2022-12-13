@@ -7,11 +7,11 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
     PlayerActionController playerActions;
-    private Rigidbody rb;
+    public static PlayerMovement Singleton;
+    public Rigidbody rb;
 
     [SerializeField]
     private float jumpHeight;
-    private float laneSpeed = 5;
 
     public float JumpHeight{
         get { return jumpHeight;}
@@ -23,67 +23,93 @@ public class PlayerMovement : MonoBehaviour
     private Transform cameraTransform;
     // private Animator animator;
 
-    private static bool isJumping = false;
-    private static bool isSliding = false;
+    private bool isJumping = false;
+    private bool isSliding = false;
+    private bool isMoving = false;
 
     private static Coroutine slideCoroutine;
     private static Coroutine jumpCoroutine;
+    private static Coroutine moveCoroutine;
 
     [SerializeField]
     private float cameraSlideAngle = 25;
 
     void Awake()
     {
+        Singleton = this;
         playerActions = GetComponent<PlayerActionController>();
-        cameraTransform = Camera.main.transform;
         rb = GetComponent<Rigidbody>();
     }
 
     public static void PlayerMove(InputAction.CallbackContext context){
-        Vector2 velocity = context.ReadValue<Vector2>();
-        if(velocity.normalized == Vector2.zero)return;
+        Vector3 velocity = context.ReadValue<Vector2>();
+        if(velocity.normalized == Vector3.zero)return;
 
-        PlayerBehaviour.Player.transform.Translate(velocity);
-    }
-
-    public void PlayerJump(InputAction.CallbackContext context)
-    {
-        if(isJumping)return;
-        else if(isSliding){
-            StopCoroutine(slideCoroutine);
-            PerformSlide();
-            return;
+        if(!PlayerMovement.Singleton.isMoving) {
+            PlayerMovement.moveCoroutine = PerformCoroutine(
+                MoveToPosition(
+                    PlayerBehaviour.Player.transform,
+                    PlayerBehaviour.Player.transform.position + (velocity * LaneBuilder.Singleton.LaneWidth),
+                    1));
         }
-        // Activate State
-        isJumping = true;
-        playerActions.SwitchActions("Air");
-        Debug.Log("Player Jumped, Action Map Air");
+        
+        //PlayerBehaviour.Player.transform.Translate(velocity * LaneBuilder.Singleton.LaneWidth);
     }
 
-    public void PlayerSlide(InputAction.CallbackContext context)
+    public static IEnumerator MoveToPosition(Transform transform, Vector3 position, float timeToMove)
     {
-        if (isSliding || isJumping) return;
+        PlayerMovement.Singleton.isMoving = true;
+        Vector3 currentPosition = transform.position;
+        float elaspedTime = 0f;
+        
+        while(elaspedTime <= 1f)
+        {
+            elaspedTime += Time.fixedDeltaTime / timeToMove;
+            transform.position = Vector3.Lerp(currentPosition, position, elaspedTime);
+            yield return 0;
+        }
+        transform.position = position;
+        PlayerMovement.Singleton.isMoving = false;
+    }
+
+    public static void PlayerJump(InputAction.CallbackContext context)
+    {
+        // if(PlayerMovement.Singleton.isJumping)return;
+        // else if(PlayerMovement.Singleton.isSliding){
+        //     PlayerMovement.Singleton.StopCoroutine(PlayerMovement.slideCoroutine);
+        //     PlayerMovement.PerformSlide();
+        //     return;
+        // }
+        // Activate State
+        PlayerMovement.Singleton.isJumping = true;
+        // PlayerActionController.SwitchActions("Air");
+        Debug.Log("Player Jumped");
+        PlayerMovement.Singleton.rb.AddForce(Vector3.up * (PlayerMovement.Singleton.JumpHeight));
+    }
+
+    public static void PlayerSlide(InputAction.CallbackContext context)
+    {
+        if (!PlayerMovement.Singleton.isSliding || !PlayerMovement.Singleton.isJumping) return;
 
         PerformSlide();
-        Debug.Log("Player Sliding");
 
         float someDelay = 5f;
-        slideCoroutine = StartCoroutine(DelayedCall(someDelay, PerformSlide));
+        slideCoroutine = PerformCoroutine(DelayedCall(someDelay, PerformSlide));
     }
 
-    private void PerformSlide()
+    private static void PerformSlide()
     {
-        int modifier = isSliding ? -1 : 1;
-        cameraTransform.RotateAround(PlayerBehaviour.Player.transform.position, Vector3.right, modifier * cameraSlideAngle);
-        isSliding = !isSliding;
+        int modifier = PlayerMovement.Singleton.isSliding ? -1 : 1;
+        Camera.main.transform.RotateAround(PlayerBehaviour.Player.transform.position, Vector3.right, modifier * PlayerMovement.Singleton.cameraSlideAngle);
+        PlayerMovement.Singleton.isSliding ^= true;
     }
 
-    public void EndJump(InputAction.CallbackContext context)
+    public static void EndJump(InputAction.CallbackContext context)
     {
         // Apply Downwards Force until isJumping is false
     }
 
-    private IEnumerator DelayedCall(float delay, Action action){
+    private static IEnumerator DelayedCall(float delay, Action action){
         // Wait Delay
         yield return new WaitForSeconds(delay);
         // Perform Action
@@ -97,11 +123,20 @@ public class PlayerMovement : MonoBehaviour
         switch(other.tag){
             case "Floor":{
                 isJumping = false;
-                playerActions.SwitchActions("Ground");
+                PlayerActionController.SwitchActions("Ground");
                 break;
             }
             default:break;
         }
     }
 
+    public static Coroutine PerformCoroutine(IEnumerator numerator)
+    {
+        return PlayerMovement.Singleton.StartCoroutine(numerator);
+    }
+
+    public static new Coroutine StopCoroutine(IEnumerator numerator)
+    {
+        return StopCoroutine(numerator);
+    }
 }

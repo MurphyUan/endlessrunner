@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class LaneBuilder : MonoBehaviour
 {
-    [SerializeField] private int NumberOfPlatforms = 15;
+    [SerializeField] public int NumberOfPlatforms = 8;
     [SerializeField] private int NumberOfLanes = 3;
-    [SerializeField] private float LaneWidth = 5f;
+    [SerializeField] public float LaneWidth = 5f;
     [SerializeField] private float StepSize = 8f;
 
     public GameObject LanePrefab;
@@ -25,21 +25,18 @@ public class LaneBuilder : MonoBehaviour
         Phantom = new GameObject("phantom");
     }
 
-    private void Start() 
-    {
-        for(int i = 0; i < NumberOfPlatforms; i++)
-            LaneBuilder.RunPhantom();
-    }
-
     #endregion
 
     private static void usePhantom()
     {
         List<ObstacleWithInstance> futureRow = ObstacleBuilder.BuildRow(LaneBuilder.Singleton.currentRow, LaneBuilder.Singleton.NumberOfLanes);
-        LaneBuilder.Singleton.currentRow = futureRow;
 
-        Phantom.transform.position += GetPositionInDirection(futureRow[0].Instance.transform.position, PlayerBehaviour.Player.transform.forward) +
-                PlayerBehaviour.Player.transform.forward * LaneBuilder.Singleton.StepSize;
+        if(LaneBuilder.Singleton.currentRow != null){
+            Phantom.transform.position = GetPositionInDirection(LaneBuilder.Singleton.currentRow[0].Instance.transform.position, Phantom.transform.forward);
+            Phantom.transform.position += Phantom.transform.forward * LaneBuilder.Singleton.StepSize;
+        }
+
+        LaneBuilder.Singleton.currentRow = futureRow;
 
         Instantiate(LaneBuilder.Singleton.LanePrefab, Phantom.transform.position, Quaternion.identity);
 
@@ -48,10 +45,12 @@ public class LaneBuilder : MonoBehaviour
         for(int i = 0; i < LaneBuilder.Singleton.NumberOfLanes; i++)
         {
             GameObject local = futureRow[i].Instance;
+            if(futureRow[i].Item.State != ObstacleState.Full){
+                // Spawn Coins & Powerups
+            }
             local.transform.position = Phantom.transform.position + PlayerBehaviour.Player.transform.right * startingLeftCoordinate;
             startingLeftCoordinate += LaneBuilder.Singleton.LaneWidth;
             local.SetActive(true);
-            Debug.Log($"Position:{local.transform.position}, Active:{local.activeInHierarchy}");
         }
     }
 

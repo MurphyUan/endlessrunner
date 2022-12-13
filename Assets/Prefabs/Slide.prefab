@@ -108,6 +108,7 @@ GameObject:
   - component: {fileID: 738315724828010148}
   - component: {fileID: 1365306882}
   - component: {fileID: -3484691857283981153}
+  - component: {fileID: 6463831531345333214}
   m_Layer: 0
   m_Name: Slide
   m_TagString: Obstacle
@@ -158,3 +159,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f60319e83a1f7248944e8eaa8aab38c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6463831531345333214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1714951648921645579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcb6d013b1d2cf249a579953efeed435, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deactiveScheduled: 0

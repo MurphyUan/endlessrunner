@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,15 +15,23 @@ public class PlayerBehaviour : MonoBehaviour
         Player = this.gameObject;    
     }
 
+    private void Start(){
+        foreach(int i in Enumerable.Range(0, LaneBuilder.Singleton.NumberOfPlatforms))
+            LaneBuilder.RunPhantom();
+    }
+
     private void OnCollisionEnter(Collision other) {
-        CurrentPlatform = other.gameObject;
+        if(CurrentPlatform != other.gameObject){
+            LaneBuilder.RunPhantom();
+            CurrentPlatform = other.gameObject;
+        }
     }
 
     private void OnTriggerEnter(Collider other) 
     {
         switch(other.GetType().ToString()){
             case "BoxCollider":{
-                LaneBuilder.RunPhantom();
+
                 break;
             }
             case "CapsuleCollider":{
