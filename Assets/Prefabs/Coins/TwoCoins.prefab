@@ -232,6 +232,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2917818779142564966}
   - component: {fileID: 819829350321876989}
+  - component: {fileID: -6035537219509713856}
   - component: {fileID: 9128880117443042231}
   m_Layer: 0
   m_Name: TwoCoins
@@ -269,9 +270,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 102721ed5df523847a235ff7a1a55a57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coins:
+  Coins:
   - {fileID: 2917818779071147559}
   - {fileID: 2917818777582160169}
+  Amount: 5
+--- !u!114 &-6035537219509713856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2917818779142564969}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f60319e83a1f7248944e8eaa8aab38c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &9128880117443042231
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -5,5 +5,6 @@ using UnityEngine;
 public class CoinParent : MonoBehaviour
 {
     
-    public List<Coin> coins;
+    public List<Coin> Coins;
+    public int Amount;
 }

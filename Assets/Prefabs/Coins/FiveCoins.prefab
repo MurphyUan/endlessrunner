@@ -232,6 +232,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5644800852164887874}
   - component: {fileID: 2739419381671955008}
+  - component: {fileID: 9100970056290037545}
   - component: {fileID: 6463974036731434657}
   m_Layer: 0
   m_Name: FiveCoins
@@ -272,12 +273,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 102721ed5df523847a235ff7a1a55a57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coins:
+  Coins:
   - {fileID: 5644800852524697183}
   - {fileID: 5644800852754359148}
   - {fileID: 5644800852530756215}
   - {fileID: 5644800852075968725}
   - {fileID: 5644800851998384043}
+  Amount: 5
+--- !u!114 &9100970056290037545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5644800852164887873}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f60319e83a1f7248944e8eaa8aab38c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &6463974036731434657
 MonoBehaviour:
   m_ObjectHideFlags: 0

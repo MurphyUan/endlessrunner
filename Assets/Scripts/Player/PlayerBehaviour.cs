@@ -16,8 +16,10 @@ public class PlayerBehaviour : MonoBehaviour
     }
 
     private void Start(){
-        foreach(int i in Enumerable.Range(0, LaneBuilder.Singleton.NumberOfPlatforms))
-            LaneBuilder.RunPhantom();
+        foreach(int i in Enumerable.Range(0, LaneBuilder.Singleton.NumberOfPlatforms)){
+            if(i < 3) LaneBuilder.RunPhantom(0);
+            else LaneBuilder.RunPhantom();
+        }
     }
 
     private void OnCollisionEnter(Collision other) {
@@ -31,11 +33,11 @@ public class PlayerBehaviour : MonoBehaviour
     {
         switch(other.GetType().ToString()){
             case "BoxCollider":{
-
+                Utils.PlayerDeathEvent();
                 break;
             }
-            case "CapsuleCollider":{
-                // Collect Powerup - Coin
+            case "SphereCollider":{
+                Utils.PlayerCoinEvent(other.GetComponent<Coin>());
                 break;
             }
             default:break;

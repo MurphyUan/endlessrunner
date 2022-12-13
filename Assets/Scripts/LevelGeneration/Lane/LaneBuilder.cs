@@ -9,10 +9,10 @@ public class LaneBuilder : MonoBehaviour
     [SerializeField] public float LaneWidth = 5f;
     [SerializeField] private float StepSize = 8f;
 
-    public GameObject LanePrefab;
-
     public static GameObject Phantom;
     public static LaneBuilder Singleton;
+
+    private static System.Random random = new System.Random();
 
     private List<ObstacleWithInstance> currentRow = null;
 
@@ -27,14 +27,17 @@ public class LaneBuilder : MonoBehaviour
 
     #endregion
 
-    public static void RunPhantom()
+    public static void RunPhantom(int stat = 1)
     {
-        usePhantom();
+        usePhantom(stat);
     }
 
-    private static void usePhantom()
+    private static void usePhantom(int stat = 1)
     {
-        List<ObstacleWithInstance> futureRow = ObstacleBuilder.BuildRow(LaneBuilder.Singleton.currentRow, LaneBuilder.Singleton.NumberOfLanes);
+        List<ObstacleWithInstance> futureRow;
+        if(stat == 0)  
+            futureRow = ObstacleBuilder.BuildRow(null, LaneBuilder.Singleton.NumberOfLanes);
+        futureRow = ObstacleBuilder.BuildRow(LaneBuilder.Singleton.currentRow, LaneBuilder.Singleton.NumberOfLanes);
 
         if(LaneBuilder.Singleton.currentRow != null){
             MovePhantom();
@@ -42,8 +45,10 @@ public class LaneBuilder : MonoBehaviour
 
         LaneBuilder.Singleton.currentRow = futureRow;
 
-        Instantiate(LaneBuilder.Singleton.LanePrefab, Phantom.transform.position, Quaternion.identity);
-
+        GameObject lane = LanePool.Singleton.GetLane();
+            lane.transform.position = Phantom.transform.position;
+        lane.SetActive(true);
+        
         PlaceObstaclesOnLane(futureRow);
     }
 
@@ -60,13 +65,28 @@ public class LaneBuilder : MonoBehaviour
         for(int i = 0; i < LaneBuilder.Singleton.NumberOfLanes; i++)
         {
             GameObject local = futureRow[i].Instance;
-            if(futureRow[i].Item.State != ObstacleState.Full){
-                // Spawn Coins & Powerups
+            if(futureRow[i].Item.State == ObstacleState.Open){
+                // Spawn Coins
+                if(random.Next(0,8) >= 6) {
+                    GameObject coins = CoinPool.Singleton.GetCoinsOfLength(random.Next(1, CoinPool.Singleton.indexCoins.Count));
+                    coins.transform.position = Phantom.transform.position + PlayerBehaviour.Player.transform.right * startingLeftCoordinate;
+                    coins.SetActive(true);
+                }
             }
             local.transform.position = Phantom.transform.position + PlayerBehaviour.Player.transform.right * startingLeftCoordinate;
             startingLeftCoordinate += LaneBuilder.Singleton.LaneWidth;
             local.SetActive(true);
         }
+    }
+
+    public static void RunPhantomOnlyOpen()
+    {
+        usePhantomOnlyOpen();
+    }
+
+    private static void usePhantomOnlyOpen()
+    {
+
     }
 
     public static Vector3 GetPositionInDirection(Vector3 position, Vector3 direction)

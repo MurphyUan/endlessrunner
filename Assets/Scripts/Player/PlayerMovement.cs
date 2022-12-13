@@ -119,7 +119,7 @@ public class PlayerMovement : MonoBehaviour
         yield break;
     }
 
-    private void onColliderEnter(Collider other)
+    private void onCollisionEnter(Collider other)
     {
         switch(other.tag){
             case "Ground":{

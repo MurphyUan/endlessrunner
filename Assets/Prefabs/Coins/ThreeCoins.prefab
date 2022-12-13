@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7435241169514821887}
   - component: {fileID: 1663370125394512637}
+  - component: {fileID: 7514430658173750175}
   - component: {fileID: 1172053434116192672}
   m_Layer: 0
   m_Name: ThreeCoins
@@ -48,10 +49,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 102721ed5df523847a235ff7a1a55a57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coins:
+  Coins:
   - {fileID: 7435241170365539479}
   - {fileID: 7435241170148204378}
   - {fileID: 7435241170266880821}
+  Amount: 5
+--- !u!114 &7514430658173750175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7435241169514821886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f60319e83a1f7248944e8eaa8aab38c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1172053434116192672
 MonoBehaviour:
   m_ObjectHideFlags: 0

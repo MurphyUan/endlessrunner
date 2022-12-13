@@ -121,6 +121,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8595052616009764631}
   - component: {fileID: 7218097504166808604}
+  - component: {fileID: -8495649105110388836}
   - component: {fileID: 8224019684936001432}
   m_Layer: 0
   m_Name: SingleCoin
@@ -157,8 +158,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 102721ed5df523847a235ff7a1a55a57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coins:
+  Coins:
   - {fileID: 8595052615181247731}
+  Amount: 5
+--- !u!114 &-8495649105110388836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8595052616009764624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f60319e83a1f7248944e8eaa8aab38c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &8224019684936001432
 MonoBehaviour:
   m_ObjectHideFlags: 0
