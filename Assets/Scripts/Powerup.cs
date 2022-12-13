@@ -11,19 +11,20 @@ public class Powerup : MonoBehaviour
     }
 
     private void OnDisable() {
-        
+        Utils.PlayerPowerupEvent -= PowerupPickUpEvent;
     }
 
     private void PowerupPickUpEvent(string powerupName){
         switch(powerupName){
             case "Magnet":{
+                Coin.isMagnetised = true;
+                PlayerMovement.DelayedCall(10, EndMagnetism);
                 break;
             }
         }
     }
 
-    private void OnMagnetPickup(){
-
+    private void EndMagnetism(){
+        Coin.isMagnetised = false;
     }
-
 }

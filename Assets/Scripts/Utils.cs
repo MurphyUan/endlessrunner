@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -6,7 +7,7 @@ public static class Utils
     public delegate void PlayerDeath();
     public static PlayerDeath PlayerDeathEvent;
 
-    public delegate void PlayerCoin();
+    public delegate void PlayerCoin(Coin coin);
     public static PlayerCoin PlayerCoinEvent;
 
     public delegate void PlayerPowerup(string powerupName);
@@ -23,10 +24,10 @@ public static class Utils
             PlayerDeathEvent();
     }
 
-    public static void PublishPlayerCoinEvent()
+    public static void PublishPlayerCoinEvent(Coin coin)
     {
         if(PlayerCoinEvent != null)
-            PlayerCoinEvent();
+            PlayerCoinEvent(coin);
     }
 
     public static void PublishPlayerPowerupEvent(string powerupName)

@@ -66,25 +66,26 @@ public class PlayerMovement : MonoBehaviour
         {
             elaspedTime += Time.fixedDeltaTime / timeToMove;
             transform.position = Vector3.Lerp(currentPosition, position, elaspedTime);
+            Camera.main.transform.position =  new Vector3(transform.position.x, Camera.main.transform.position.y, Camera.main.transform.position.z);
             yield return 0;
         }
         transform.position = position;
+        Camera.main.transform.position = new Vector3(transform.position.x, Camera.main.transform.position.y, Camera.main.transform.position.z);
         PlayerMovement.Singleton.isMoving = false;
     }
 
     public static void PlayerJump(InputAction.CallbackContext context)
     {
-        // if(PlayerMovement.Singleton.isJumping)return;
-        // else if(PlayerMovement.Singleton.isSliding){
-        //     PlayerMovement.Singleton.StopCoroutine(PlayerMovement.slideCoroutine);
-        //     PlayerMovement.PerformSlide();
-        //     return;
-        // }
+        if(PlayerMovement.Singleton.isJumping)return;
+        else if(PlayerMovement.Singleton.isSliding){
+            PlayerMovement.Singleton.StopCoroutine(PlayerMovement.slideCoroutine);
+            PlayerMovement.PerformSlide();
+            return;
+        }
         // Activate State
         PlayerMovement.Singleton.isJumping = true;
-        // PlayerActionController.SwitchActions("Air");
-        Debug.Log("Player Jumped");
-        PlayerMovement.Singleton.rb.AddForce(Vector3.up * (PlayerMovement.Singleton.JumpHeight));
+        PlayerActionController.SwitchActions("Air");
+        PlayerMovement.Singleton.rb.AddForce(Vector3.up * (PlayerMovement.Singleton.JumpHeight), ForceMode.Impulse);
     }
 
     public static void PlayerSlide(InputAction.CallbackContext context)
@@ -93,8 +94,7 @@ public class PlayerMovement : MonoBehaviour
 
         PerformSlide();
 
-        float someDelay = 5f;
-        slideCoroutine = PerformCoroutine(DelayedCall(someDelay, PerformSlide));
+        slideCoroutine = PerformCoroutine(DelayedCall(1, PerformSlide));
     }
 
     private static void PerformSlide()
@@ -107,9 +107,10 @@ public class PlayerMovement : MonoBehaviour
     public static void EndJump(InputAction.CallbackContext context)
     {
         // Apply Downwards Force until isJumping is false
+        PlayerMovement.Singleton.rb.AddForce(Vector3.down * (PlayerMovement.Singleton.JumpHeight), ForceMode.Impulse);
     }
 
-    private static IEnumerator DelayedCall(float delay, Action action){
+    public static IEnumerator DelayedCall(float delay, Action action){
         // Wait Delay
         yield return new WaitForSeconds(delay);
         // Perform Action
@@ -121,13 +122,17 @@ public class PlayerMovement : MonoBehaviour
     private void onColliderEnter(Collider other)
     {
         switch(other.tag){
-            case "Floor":{
+            case "Ground":{
                 isJumping = false;
                 PlayerActionController.SwitchActions("Ground");
                 break;
             }
             default:break;
         }
+    }
+
+    private void OnCollisionExit(Collision other) {
+        
     }
 
     public static Coroutine PerformCoroutine(IEnumerator numerator)

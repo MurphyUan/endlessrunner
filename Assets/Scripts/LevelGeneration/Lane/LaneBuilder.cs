@@ -27,19 +27,34 @@ public class LaneBuilder : MonoBehaviour
 
     #endregion
 
+    public static void RunPhantom()
+    {
+        usePhantom();
+    }
+
     private static void usePhantom()
     {
         List<ObstacleWithInstance> futureRow = ObstacleBuilder.BuildRow(LaneBuilder.Singleton.currentRow, LaneBuilder.Singleton.NumberOfLanes);
 
         if(LaneBuilder.Singleton.currentRow != null){
-            Phantom.transform.position = GetPositionInDirection(LaneBuilder.Singleton.currentRow[0].Instance.transform.position, Phantom.transform.forward);
-            Phantom.transform.position += Phantom.transform.forward * LaneBuilder.Singleton.StepSize;
+            MovePhantom();
         }
 
         LaneBuilder.Singleton.currentRow = futureRow;
 
         Instantiate(LaneBuilder.Singleton.LanePrefab, Phantom.transform.position, Quaternion.identity);
 
+        PlaceObstaclesOnLane(futureRow);
+    }
+
+    private static void MovePhantom()
+    {
+        Phantom.transform.position = GetPositionInDirection(LaneBuilder.Singleton.currentRow[0].Instance.transform.position, Phantom.transform.forward);
+            Phantom.transform.position += Phantom.transform.forward * LaneBuilder.Singleton.StepSize;
+    }
+
+    private static void PlaceObstaclesOnLane(List<ObstacleWithInstance> futureRow)
+    {
         float startingLeftCoordinate = (LaneBuilder.Singleton.NumberOfLanes / 2) * -(LaneBuilder.Singleton.LaneWidth);
 
         for(int i = 0; i < LaneBuilder.Singleton.NumberOfLanes; i++)
@@ -52,11 +67,6 @@ public class LaneBuilder : MonoBehaviour
             startingLeftCoordinate += LaneBuilder.Singleton.LaneWidth;
             local.SetActive(true);
         }
-    }
-
-    public static void RunPhantom()
-    {
-        usePhantom();
     }
 
     public static Vector3 GetPositionInDirection(Vector3 position, Vector3 direction)
