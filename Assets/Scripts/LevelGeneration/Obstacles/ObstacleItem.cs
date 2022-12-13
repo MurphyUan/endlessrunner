@@ -11,7 +11,7 @@ public enum ObstacleState
 
 [Serializable]
 public class ObstacleItem : MonoBehaviour {
-    public GameObject Prefab;
-    public ObstacleState State;
-    public int Length;
+    [SerializeField] public GameObject Prefab;
+    [SerializeField] public ObstacleState State;
+    [SerializeField] public int Amount = 5;
 }

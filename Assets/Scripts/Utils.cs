@@ -55,6 +55,11 @@ public static class Utils
         }
     }
 
+    public static List<T> CreateList<T>(params T[] values)
+    {
+        return new List<T>(values);
+    }
+
     public static T GetRandomFromList<T>(this IList<T> list)
     {
         int n = list.Count;

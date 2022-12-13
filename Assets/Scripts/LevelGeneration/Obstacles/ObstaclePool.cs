@@ -48,7 +48,7 @@ public class ObstaclePool : MonoBehaviour
         foreach(ObstacleItem obs in AvailableObstacles)
         {
             ObstacleWithInstances obstacle = new ObstacleWithInstances(obs, new List<GameObject>());
-            for(int i = 0; i < obs.Length; i++)
+            for(int i = 0; i < obs.Amount; i++)
             {
                 createNewObstacle(obstacle);
             }
@@ -74,7 +74,7 @@ public class ObstaclePool : MonoBehaviour
     {
         foreach(GameObject instance in obstacle.Instances)
         {
-            if(instance.activeInHierarchy) return new ObstacleWithInstance(obstacle.Item, instance);
+            if(!instance.activeInHierarchy) return new ObstacleWithInstance(obstacle.Item, instance);
         }
         return createNewObstacle(obstacle);
     }

@@ -4,19 +4,21 @@ using UnityEngine;
 
 public class Scroller : MonoBehaviour
 {
-    [SerializeField] private static float minMoveSpeed = 0.01f;
-    [SerializeField] private static float maxMoveSpeed = 0.05f;
-    private static float moveSpeed;
-
-    private void Awake() 
-    {
-        moveSpeed = minMoveSpeed;
-        // Get MinimumMoveSpeed From Difficulty
-        // Get MaximumMoveSpeed From Difficulty
-    }
+    private static float moveSpeed = 5f;
+    private float defaultSpeed = 5f;
 
     private void FixedUpdate() 
     {
-        this.transform.position += PlayerBehaviour.Player.transform.forward * moveSpeed;
+        this.transform.position -= (PlayerBehaviour.Player.transform.forward * moveSpeed) * Time.fixedDeltaTime;
+    }
+
+    private static IEnumerator StartScroller(){
+        int time = 0;
+        while(true)
+        {
+            time++;
+            
+            yield return new WaitForSeconds(1);
+        }
     } 
 }

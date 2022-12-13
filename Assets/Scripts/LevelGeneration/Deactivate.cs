@@ -7,14 +7,11 @@ public class Deactivate : MonoBehaviour
     [SerializeField]
     bool deactiveScheduled = false;
 
-    private void OnTriggerExit(Collider other) {
-        if(other.gameObject.tag == "Player")
+    private void LateUpdate() {
+        if(transform.position.z == -1 && gameObject.activeInHierarchy && !deactiveScheduled)
         {
-            if(!deactiveScheduled)
-            {
-                Invoke("DeactivateObject", 1.5f);
-                deactiveScheduled = true;
-            }
+            Invoke("DeactivateObject", 1.5f);
+            deactiveScheduled = true;
         }
     }
 

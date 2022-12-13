@@ -4,69 +4,89 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObstacleRowBuilder : MonoBehaviour
+public class ObstacleBuilder : MonoBehaviour
 {
 
-    public static ObstacleRowBuilder Singleton;
+    public static ObstacleBuilder Singleton;
+
+    private Dictionary<int, List<int>> rowStateChanges;
+
+    
 
     #region StartUp Methods
 
     private void Awake()
     {
         Singleton = this;
+        rowStateChanges = new Dictionary<int, List<int>>();
+        FillDictionary();
     }
 
     #endregion
 
-    public static List<ObstacleWithInstance> BuildRow(List<ObstacleItem> currentRow, int length)
+    public static List<ObstacleWithInstance> BuildRow(List<ObstacleWithInstance> currentRow, int length)
     {
         return buildRow(currentRow, length);
     }
 
-    private static List<ObstacleWithInstance> buildRow(List<ObstacleItem> currentRow, int length)
+    private static List<ObstacleWithInstance> buildRow(List<ObstacleWithInstance> currentRow, int length)
     {
         if(currentRow == null) return returnOpenRow(length);
-
-        List<ObstacleItem> futureRow = new List<ObstacleItem>(currentRow);
 
         int stateIndex = 0;
         bool hasHalf = false;
 
-        foreach(ObstacleItem item in futureRow){
-            int index = item.State == ObstacleState.Full ? 1 : 0;
-            stateIndex += (int)Math.Pow(2, index);
-            if(item.State == ObstacleState.Half) hasHalf = true;
-        }
-
-        switch(stateIndex){
-            case 0:{
-                break;
-            }
-            case 1:{
-                break;
-            }
-            case 3:{
-                break;
-            }
-            default:{
-                break;
+        for(int i = 0; i < currentRow.Count; i++){
+            switch(currentRow[i].Item.State){
+                case ObstacleState.Full:{
+                    stateIndex += (int) Math.Pow(2, i);
+                    break;
+                }
+                case ObstacleState.Half:{
+                    hasHalf = true;
+                    break;
+                }
             }
         }
 
-        
-
-        return returnOpenRow(length);
+        return GetNewRow(stateIndex, length, hasHalf);
     }
 
-    private static List<ObstacleItem> GetNewStates(List<ObstacleItem> items)
+    private static List<ObstacleWithInstance> GetNewRow (int stateIndex, int length, bool hasHalf)
     {
-        return null;
-    }
+        List<ObstacleWithInstance> listToBeReturned = new List<ObstacleWithInstance>();
+        int newStateIndex = Utils.GetRandomFromList<int>(ObstacleBuilder.Singleton.rowStateChanges[stateIndex]);
 
-    private static bool TrySwap(bool state)
-    {
+        string binaryState = Convert.ToString(newStateIndex, 2);
+        for(int i = binaryState.Length; i < length; i++)
+            binaryState = "0"+binaryState;
 
-        return state;
+        foreach(char value in binaryState){
+            switch(value){
+                case '0' when hasHalf:{
+                    System.Random random = new System.Random();
+                    if(random.Next(0, 5) == 4)
+                        listToBeReturned.Add(ObstaclePool.Singleton.GetObstacleOfState(ObstacleState.Half));
+                    else
+                        goto case '0';
+                    break;
+                }
+                case '0':{
+                    listToBeReturned.Add(ObstaclePool.Singleton.GetObstacleOfState(ObstacleState.Open));
+                    break;
+                }
+                case '1':{
+                    listToBeReturned.Add(ObstaclePool.Singleton.GetObstacleOfState(ObstacleState.Full));
+                    break;
+                }
+                default:{
+                    Debug.Log("Hits Default Somehow");
+                    break;
+                }
+            }
+        }
+
+        return listToBeReturned;
     }
 
     private static bool CheckSwap(ObstacleItem obstacle)
@@ -83,39 +103,15 @@ public class ObstacleRowBuilder : MonoBehaviour
         return localArray;
     }
 
-    #region Old Code
-
-    // private (bool, ObstacleState) returnUpdatedState(Obstacle obstacle)
-    // {
-    //     bool shouldSwapState = CheckSwap(obstacle);
-    //     ObstacleState swappedState = obstacle.state;
-
-    //     switch(obstacle.state){
-    //         case ObstacleState.Open:{
-    //             if(shouldSwapState) {
-    //                 // Choose between Half or Closed
-    //                 if(UnityEngine.Random.Range(0,2) == 0)
-    //                     swappedState = ObstacleState.Half;
-    //                 else 
-    //                     swappedState = ObstacleState.Blocked;
-    //                 return (true, swappedState);
-    //             } else
-    //                 break;
-    //         }
-    //         case ObstacleState.Half:{
-    //             swappedState = ObstacleState.Open;
-    //             return (true, swappedState);
-    //         }
-    //         case ObstacleState.Full:{
-    //             if(shouldSwapState) {
-    //                 swappedState = ObstacleState.Open;
-    //                 return (true, swappedState);
-    //             } else
-    //                 break;
-    //         }
-    //     }
-    //     obstacle.sinceChange++;
-    //     return (false, swappedState);
-    // }
-    #endregion
+    private void FillDictionary()
+    {
+        rowStateChanges.Clear();
+        rowStateChanges.Add(0, Utils.CreateList<int>(0, 1, 2, 3, 4, 5, 6));
+        rowStateChanges.Add(1, Utils.CreateList<int>(0, 1, 2, 3, 4, 5));
+        rowStateChanges.Add(2, Utils.CreateList<int>(0, 2));
+        rowStateChanges.Add(3, Utils.CreateList<int>(0, 1, 2, 3));
+        rowStateChanges.Add(4, Utils.CreateList<int>(0, 1, 2, 4, 5, 6));
+        rowStateChanges.Add(5, Utils.CreateList<int>(0, 1, 4, 5));
+        rowStateChanges.Add(6, Utils.CreateList<int>(0, 2, 4, 6));
+    }
 }
