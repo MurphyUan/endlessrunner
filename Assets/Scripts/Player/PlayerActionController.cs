@@ -30,7 +30,7 @@ public class PlayerActionController : MonoBehaviour
         switch(mapContext) {
             case "Ground":{
                 playerInput.actions["Jump"].performed -= PlayerMovement.PlayerJump;
-                playerInput.actions["Slide"].performed -= PlayerMovement.PlayerSlide;
+                // playerInput.actions["Slide"].performed -= PlayerMovement.PlayerSlide;
                 break;
             }
             case "Air":{
@@ -38,6 +38,7 @@ public class PlayerActionController : MonoBehaviour
                 break;
             }
             default:{
+                Debug.Log($"Switch Escaped with string:{mapContext}");
                 break;
             }
         }
@@ -51,7 +52,7 @@ public class PlayerActionController : MonoBehaviour
             case "Ground":{
                 Debug.Log($"{mapContext} Was Called");
                 playerInput.actions["Jump"].performed += PlayerMovement.PlayerJump;
-                playerInput.actions["Slide"].performed += PlayerMovement.PlayerSlide;
+                // playerInput.actions["Slide"].performed += PlayerMovement.PlayerSlide;
                 break;
             }
             case "Air":{

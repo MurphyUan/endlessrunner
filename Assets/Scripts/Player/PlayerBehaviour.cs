@@ -15,16 +15,10 @@ public class PlayerBehaviour : MonoBehaviour
         Player = this.gameObject;    
     }
 
-    private void Start(){
-        foreach(int i in Enumerable.Range(0, LaneBuilder.Singleton.NumberOfPlatforms)){
-            if(i < 3) LaneBuilder.RunPhantom(0);
-            else LaneBuilder.RunPhantom();
-        }
-    }
-
     private void OnCollisionEnter(Collision other) {
         if(CurrentPlatform != other.gameObject){
-            LaneBuilder.RunPhantom();
+            if(LevelHandler.spawnPlatforms)
+                LaneBuilder.RunPhantom();
             CurrentPlatform = other.gameObject;
         }
     }

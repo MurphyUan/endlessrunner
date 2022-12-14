@@ -15,6 +15,7 @@ public class LaneBuilder : MonoBehaviour
     private static System.Random random = new System.Random();
 
     private List<ObstacleWithInstance> currentRow = null;
+    private GameObject currentLane = null;
 
     #region StartUp Methods
 
@@ -39,22 +40,23 @@ public class LaneBuilder : MonoBehaviour
             futureRow = ObstacleBuilder.BuildRow(null, LaneBuilder.Singleton.NumberOfLanes);
         futureRow = ObstacleBuilder.BuildRow(LaneBuilder.Singleton.currentRow, LaneBuilder.Singleton.NumberOfLanes);
 
-        if(LaneBuilder.Singleton.currentRow != null){
+        if(LaneBuilder.Singleton.currentLane != null)
             MovePhantom();
-        }
-
-        LaneBuilder.Singleton.currentRow = futureRow;
 
         GameObject lane = LanePool.Singleton.GetLane();
             lane.transform.position = Phantom.transform.position;
         lane.SetActive(true);
-        
+
+        LaneBuilder.Singleton.currentLane = lane;
+
+        LaneBuilder.Singleton.currentRow = futureRow;
+
         PlaceObstaclesOnLane(futureRow);
     }
 
     private static void MovePhantom()
     {
-        Phantom.transform.position = GetPositionInDirection(LaneBuilder.Singleton.currentRow[0].Instance.transform.position, Phantom.transform.forward);
+        Phantom.transform.position = GetPositionInDirection(LaneBuilder.Singleton.currentLane.transform.position, Phantom.transform.forward);
             Phantom.transform.position += Phantom.transform.forward * LaneBuilder.Singleton.StepSize;
     }
 
@@ -70,6 +72,8 @@ public class LaneBuilder : MonoBehaviour
                 if(random.Next(0,8) >= 6) {
                     GameObject coins = CoinPool.Singleton.GetCoinsOfLength(random.Next(1, CoinPool.Singleton.indexCoins.Count));
                     coins.transform.position = Phantom.transform.position + PlayerBehaviour.Player.transform.right * startingLeftCoordinate;
+                    foreach(Coin coin in coins.GetComponent<CoinParent>().Coins)
+                        coin.gameObject.SetActive(true);
                     coins.SetActive(true);
                 }
             }
@@ -77,16 +81,6 @@ public class LaneBuilder : MonoBehaviour
             startingLeftCoordinate += LaneBuilder.Singleton.LaneWidth;
             local.SetActive(true);
         }
-    }
-
-    public static void RunPhantomOnlyOpen()
-    {
-        usePhantomOnlyOpen();
-    }
-
-    private static void usePhantomOnlyOpen()
-    {
-
     }
 
     public static Vector3 GetPositionInDirection(Vector3 position, Vector3 direction)

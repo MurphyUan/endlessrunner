@@ -24,15 +24,15 @@ public class PlayerMovement : MonoBehaviour
     // private Animator animator;
 
     private bool isJumping = false;
-    private bool isSliding = false;
+    // private bool isSliding = false;
     private bool isMoving = false;
 
-    private static Coroutine slideCoroutine;
+    // private static Coroutine slideCoroutine;
     private static Coroutine jumpCoroutine;
     private static Coroutine moveCoroutine;
 
     [SerializeField]
-    private float cameraSlideAngle = 25;
+    // private float cameraSlideAngle = 25;
 
     void Awake()
     {
@@ -77,32 +77,32 @@ public class PlayerMovement : MonoBehaviour
     public static void PlayerJump(InputAction.CallbackContext context)
     {
         if(PlayerMovement.Singleton.isJumping)return;
-        else if(PlayerMovement.Singleton.isSliding){
-            PlayerMovement.Singleton.StopCoroutine(PlayerMovement.slideCoroutine);
-            PlayerMovement.PerformSlide();
-            return;
-        }
+        // else if(PlayerMovement.Singleton.isSliding){
+        //     PlayerMovement.Singleton.StopCoroutine(PlayerMovement.slideCoroutine);
+        //     PlayerMovement.PerformSlide();
+        //     return;
+        // }
         // Activate State
         PlayerMovement.Singleton.isJumping = true;
         PlayerActionController.SwitchActions("Air");
         PlayerMovement.Singleton.rb.AddForce(Vector3.up * (PlayerMovement.Singleton.JumpHeight), ForceMode.Impulse);
     }
 
-    public static void PlayerSlide(InputAction.CallbackContext context)
-    {
-        if (!PlayerMovement.Singleton.isSliding || !PlayerMovement.Singleton.isJumping) return;
+    // public static void PlayerSlide(InputAction.CallbackContext context)
+    // {
+    //     if (!PlayerMovement.Singleton.isSliding || !PlayerMovement.Singleton.isJumping) return;
 
-        PerformSlide();
+    //     PerformSlide();
 
-        slideCoroutine = PerformCoroutine(DelayedCall(1, PerformSlide));
-    }
+    //     slideCoroutine = PerformCoroutine(DelayedCall(1, PerformSlide));
+    // }
 
-    private static void PerformSlide()
-    {
-        int modifier = PlayerMovement.Singleton.isSliding ? -1 : 1;
-        Camera.main.transform.RotateAround(PlayerBehaviour.Player.transform.position, Vector3.right, modifier * PlayerMovement.Singleton.cameraSlideAngle);
-        PlayerMovement.Singleton.isSliding ^= true;
-    }
+    // private static void PerformSlide()
+    // {
+    //     int modifier = PlayerMovement.Singleton.isSliding ? -1 : 1;
+    //     Camera.main.transform.RotateAround(PlayerBehaviour.Player.transform.position, Vector3.right, modifier * PlayerMovement.Singleton.cameraSlideAngle);
+    //     PlayerMovement.Singleton.isSliding ^= true;
+    // }
 
     public static void EndJump(InputAction.CallbackContext context)
     {

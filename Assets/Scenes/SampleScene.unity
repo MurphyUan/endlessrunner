@@ -211,7 +211,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 83875242}
   jumpHeight: 7.5
-  cameraSlideAngle: 25
 --- !u!135 &83875235
 SphereCollider:
   m_ObjectHideFlags: 0
