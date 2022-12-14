@@ -6,7 +6,7 @@ public class Scroller : MonoBehaviour
 {
     private static float moveSpeed = 5f;
 
-    private static float timeElapsed = 1;
+    public static float timeElapsed = 1;
 
     private void FixedUpdate() 
     {
@@ -18,7 +18,7 @@ public class Scroller : MonoBehaviour
         while(true)
         {
             if(Time.timeScale == 0)break;
-            float localSpeed = Mathf.Sqrt(timeElapsed);
+            float localSpeed = Mathf.Sqrt(timeElapsed) * 2;
             if(moveSpeed < localSpeed) moveSpeed = localSpeed;
             
             yield return new WaitForSeconds(1);

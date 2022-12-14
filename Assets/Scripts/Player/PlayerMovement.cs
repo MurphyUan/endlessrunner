@@ -108,6 +108,13 @@ public class PlayerMovement : MonoBehaviour
     {
         // Apply Downwards Force until isJumping is false
         PlayerMovement.Singleton.rb.AddForce(Vector3.down * (PlayerMovement.Singleton.JumpHeight), ForceMode.Impulse);
+        endJump();
+    }
+
+    public static void endJump()
+    {
+        PlayerMovement.Singleton.isJumping = false;
+        PlayerActionController.SwitchActions("Ground");
     }
 
     public static IEnumerator DelayedCall(float delay, Action action){
@@ -119,20 +126,27 @@ public class PlayerMovement : MonoBehaviour
         yield break;
     }
 
-    private void onCollisionEnter(Collider other)
+    private void onColliderEnter(Collider other)
+    {
+        
+    }
+
+    private void OnTriggerEnter(Collider other) 
     {
         switch(other.tag){
             case "Ground":{
-                isJumping = false;
-                PlayerActionController.SwitchActions("Ground");
+                endJump();
                 break;
             }
-            default:break;
+            case "Obstacle":{
+                Utils.PublishPlayerDeathEvent();
+                break;
+            }
+            default:{
+                Debug.Log(other.tag);
+                break;
+            };
         }
-    }
-
-    private void OnCollisionExit(Collision other) {
-        
     }
 
     public static Coroutine PerformCoroutine(IEnumerator numerator)

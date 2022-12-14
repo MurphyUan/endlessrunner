@@ -15,7 +15,16 @@ public class PlayerBehaviour : MonoBehaviour
         Player = this.gameObject;    
     }
 
+    private void FixedUpdate() {
+        if(Player.transform.position.y < -1)
+            Utils.PublishPlayerDeathEvent();
+    }
+
     private void OnCollisionEnter(Collision other) {
+        if(other.gameObject.tag == "Obstacle"){
+            Utils.PublishPlayerDeathEvent();
+            return;
+        }
         if(CurrentPlatform != other.gameObject){
             if(LevelHandler.spawnPlatforms)
                 LaneBuilder.RunPhantom();
@@ -25,16 +34,23 @@ public class PlayerBehaviour : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) 
     {
-        switch(other.GetType().ToString()){
-            case "BoxCollider":{
-                Utils.PlayerDeathEvent();
+        switch(other.tag){
+            case "Obstacle":{
+                Debug.Log("Player Dies");
+                Utils.PublishPlayerDeathEvent();
                 break;
             }
-            case "SphereCollider":{
-                Utils.PlayerCoinEvent(other.GetComponent<Coin>());
+            case "Coin": {
+                Utils.PublishPlayerCoinEvent(other.GetComponent<Coin>());
                 break;
             }
-            default:break;
+            case "Ground": {
+                PlayerMovement.endJump();
+                break;
+            }
+            default:{
+                break;
+            };
         }
     }
 }

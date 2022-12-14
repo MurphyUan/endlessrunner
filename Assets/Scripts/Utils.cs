@@ -18,28 +18,36 @@ public static class Utils
 
     public static System.Random r = new System.Random();
 
-    public static void PublishPlayerDeath()
+    public static void PublishPlayerDeathEvent()
     {
         if(PlayerDeathEvent != null)
-            PlayerDeathEvent();
+        {
+                PlayerDeathEvent();
+        }
     }
 
     public static void PublishPlayerCoinEvent(Coin coin)
     {
         if(PlayerCoinEvent != null)
+        {
             PlayerCoinEvent(coin);
+        }
     }
 
     public static void PublishPlayerPowerupEvent(string powerupName)
     {
         if(PlayerPowerupEvent != null)
+        {
             PlayerPowerupEvent(powerupName);
+        }
     }
 
     public static void PublishMilestoneReachedEvent()
     {
         if(MilestoneReachedEvent != null)
+        {
             MilestoneReachedEvent();
+        }
     }
 
     public static void Shuffle<T>(this IList<T> list)
