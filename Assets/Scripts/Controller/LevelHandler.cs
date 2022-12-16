@@ -8,11 +8,13 @@ using TMPro;
 public class LevelHandler : MonoBehaviour
 {
     [SerializeField] private TMP_Text PlayerScore;
+    [SerializeField] private TMP_Text LaneSpeed;
     [SerializeField] private SceneController sceneController;
 
     [SerializeField] private int StartingLanes = 3;
+    [SerializeField] public float maxMoveSpeed = 2;
 
-    private int playerScore = 0;
+    public static int playerScore = 0;
     private bool shouldCallScroller = false;
 
     public static bool PlayerDead = false;
@@ -25,7 +27,8 @@ public class LevelHandler : MonoBehaviour
         scroller = StartCoroutine(Scroller.startScroller());
         Time.timeScale = 1;
 
-        foreach(int i in Enumerable.Range(0, LaneBuilder.Singleton.NumberOfPlatforms)){
+        for(int i = 0; i < LaneBuilder.Singleton.NumberOfPlatforms; i++)
+        {
             if(i <= StartingLanes) LaneBuilder.RunPhantom(0);
             else {
                 LaneBuilder.RunPhantom();
@@ -45,20 +48,21 @@ public class LevelHandler : MonoBehaviour
             shouldCallScroller = false;
         }
         
-        _playerScore = Time.fixedDeltaTime * Scroller.timeElapsed;
+        _playerScore += Time.fixedDeltaTime * Scroller.timeElapsed;
         if(_playerScore >= 1){
-            _playerScore = 0;
+            _playerScore -= 1;
             playerScore += 1;
         }
 
         PlayerScore.text = $"Score:{playerScore.ToString()}";
+        LaneSpeed.text = $"Speed:{Scroller.moveSpeed}";
     }
 
     public void OnPlayerDeathEvent() {
         Debug.Log("Player Died");
         PlayerDead = true;
-        sceneController.showRecord();
         Time.timeScale = 0;
+        sceneController.showRecord();
     }
 
     public void OnPlayerCoinEvent(Coin coin) {

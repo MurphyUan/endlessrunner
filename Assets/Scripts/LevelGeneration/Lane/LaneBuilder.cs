@@ -9,6 +9,8 @@ public class LaneBuilder : MonoBehaviour
     [SerializeField] public float LaneWidth = 5f;
     [SerializeField] private float StepSize = 8f;
 
+    public float maxMoveSpeed = 2f;
+
     public static GameObject Phantom;
     public static LaneBuilder Singleton;
 
@@ -50,6 +52,8 @@ public class LaneBuilder : MonoBehaviour
         LaneBuilder.Singleton.currentLane = lane;
 
         LaneBuilder.Singleton.currentRow = futureRow;
+
+        if(stat == 0)return;
 
         PlaceObstaclesOnLane(futureRow);
     }

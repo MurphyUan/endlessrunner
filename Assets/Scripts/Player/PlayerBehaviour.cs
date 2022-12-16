@@ -20,10 +20,14 @@ public class PlayerBehaviour : MonoBehaviour
             Utils.PublishPlayerDeathEvent();
     }
 
-    private void OnCollisionEnter(Collision other) {
+    private void OnCollisionEnter(Collision other) 
+    {
         if(other.gameObject.tag == "Obstacle"){
             Utils.PublishPlayerDeathEvent();
             return;
+        }
+        if(other.gameObject.tag == "Ground"){
+            PlayerMovement.endJump();
         }
         if(CurrentPlatform != other.gameObject){
             if(LevelHandler.spawnPlatforms)

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class SceneController : MonoBehaviour
 {
@@ -9,11 +10,13 @@ public class SceneController : MonoBehaviour
     [SerializeField] private GameObject MenuOverlay;
     [SerializeField] private GameObject EndOverlay;
 
+    public static SceneController Singleton;
+
     private bool showMenu = false;
 
-    private void Update() 
+    private void Awake()
     {
-        // Update Visibility of Overlays
+        Singleton = this;
     }
 
     public void NavigateToScene(string sceneName)
@@ -54,5 +57,10 @@ public class SceneController : MonoBehaviour
         else Time.timeScale = 1;
         GameOverlay.SetActive(!showMenu);
         MenuOverlay.SetActive(showMenu);
+    }
+
+    public void RecordScore(TMP_Text nameText) 
+    {
+        LeaderBoard.RecordLevelEntry(SceneManager.GetActiveScene().name, new LeaderBoard.Entry(nameText.name, LevelHandler.playerScore));
     }
 }

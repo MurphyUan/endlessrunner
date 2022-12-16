@@ -64,7 +64,7 @@ public class PlayerMovement : MonoBehaviour
         
         while(elaspedTime <= 1f)
         {
-            elaspedTime += Time.fixedDeltaTime / timeToMove;
+            elaspedTime += Scroller.moveSpeed / timeToMove;
             transform.position = Vector3.Lerp(currentPosition, position, elaspedTime);
             Camera.main.transform.position =  new Vector3(transform.position.x, Camera.main.transform.position.y, Camera.main.transform.position.z);
             yield return 0;

@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class Scroller : MonoBehaviour
 {
-    private static float moveSpeed = 5f;
+    public static float moveSpeed = 0.1f;
 
     public static float timeElapsed = 1;
 
     private void FixedUpdate() 
     {
-        this.transform.position -= (PlayerBehaviour.Player.transform.forward * moveSpeed) * Time.fixedDeltaTime;
+        this.transform.position -= (PlayerBehaviour.Player.transform.forward * moveSpeed);
     }
 
     public static IEnumerator startScroller()
@@ -18,11 +18,9 @@ public class Scroller : MonoBehaviour
         while(true)
         {
             if(Time.timeScale == 0)break;
-            float localSpeed = Mathf.Sqrt(timeElapsed) * 2;
-            if(moveSpeed < localSpeed) moveSpeed = localSpeed;
-            
+            if(moveSpeed < LaneBuilder.Singleton.maxMoveSpeed)
+                moveSpeed += Time.fixedDeltaTime * 0.1f;
             yield return new WaitForSeconds(1);
-            timeElapsed += moveSpeed * Time.fixedDeltaTime;
         }
     } 
 }
