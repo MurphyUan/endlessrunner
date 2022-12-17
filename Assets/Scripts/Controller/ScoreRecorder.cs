@@ -8,26 +8,13 @@ public class ScoreRecorder : MonoBehaviour
     [SerializeField] private TMP_Text nameText;
     [SerializeField] private TMP_Text scoreValue;
 
-    private float timeValue = 0;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        nameText = GameObject.Find("NameText").GetComponent<TMP_Text>();
-        scoreValue = GameObject.Find("ScoreValue").GetComponent<TMP_Text>();
-    }
-
     // Update is called once per frame
     void Update()
     {
-        scoreValue.text = 0.ToString("000000000");
+        scoreValue.text = LevelHandler.playerScore.ToString("000000000");
     }
 
-    private void FixedUpdate() {
-        timeValue += Time.fixedDeltaTime;
-    }
-
-    public void RecordScore() {
-        LeaderBoard.RecordLevelEntry("", new LeaderBoard.Entry(nameText.text.ToUpper(), 0));
+    public void RecordScore(string levelName) {
+        LeaderBoard.RecordLevelEntry(levelName, new LeaderBoard.Entry(nameText.text.ToUpper(), LevelHandler.playerScore));
     }
 }

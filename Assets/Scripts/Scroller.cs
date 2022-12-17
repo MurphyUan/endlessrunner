@@ -18,8 +18,8 @@ public class Scroller : MonoBehaviour
         while(true)
         {
             if(Time.timeScale == 0)break;
-            if(moveSpeed < LaneBuilder.Singleton.maxMoveSpeed)
-                moveSpeed += Time.fixedDeltaTime * 0.1f;
+            if(moveSpeed < LevelHandler.Singleton.MaxMoveSpeed)
+                moveSpeed += Time.fixedDeltaTime * LevelHandler.Singleton.SpeedIncrease;
             yield return new WaitForSeconds(1);
         }
     } 

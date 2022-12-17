@@ -9,7 +9,6 @@ public class SceneController : MonoBehaviour
     [SerializeField] private GameObject GameOverlay;
     [SerializeField] private GameObject MenuOverlay;
     [SerializeField] private GameObject EndOverlay;
-
     public static SceneController Singleton;
 
     private bool showMenu = false;
@@ -43,24 +42,19 @@ public class SceneController : MonoBehaviour
         Application.Quit();
     }
 
-    public void showRecord()
+    public void ShowRecord()
     {
         GameOverlay.SetActive(false);
         MenuOverlay.SetActive(false);
         EndOverlay.SetActive(true);
     }
 
-    public void UpdateVisibility() 
+    public void UpdateVisibility(UnityEngine.InputSystem.InputAction.CallbackContext context) 
     {
         showMenu = !showMenu;
         if(showMenu) Time.timeScale = 0;
         else Time.timeScale = 1;
         GameOverlay.SetActive(!showMenu);
         MenuOverlay.SetActive(showMenu);
-    }
-
-    public void RecordScore(TMP_Text nameText) 
-    {
-        LeaderBoard.RecordLevelEntry(SceneManager.GetActiveScene().name, new LeaderBoard.Entry(nameText.name, LevelHandler.playerScore));
     }
 }

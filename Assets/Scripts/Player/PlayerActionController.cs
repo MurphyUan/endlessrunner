@@ -44,6 +44,7 @@ public class PlayerActionController : MonoBehaviour
         }
 
         playerInput.actions["Move"].performed -= PlayerMovement.PlayerMove;
+        playerInput.actions["ShowMenu"].performed -= SceneController.Singleton.UpdateVisibility;
     }
 
     private static void EnableActions(string mapContext)
@@ -67,6 +68,7 @@ public class PlayerActionController : MonoBehaviour
         }
 
         playerInput.actions["Move"].performed += PlayerMovement.PlayerMove;
+        playerInput.actions["ShowMenu"].performed += SceneController.Singleton.UpdateVisibility;
     }
 
     public static void SwitchActions(string mapContext)

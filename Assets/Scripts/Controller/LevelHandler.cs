@@ -12,7 +12,10 @@ public class LevelHandler : MonoBehaviour
     [SerializeField] private SceneController sceneController;
 
     [SerializeField] private int StartingLanes = 3;
-    [SerializeField] public float maxMoveSpeed = 2;
+    [SerializeField] public float MaxMoveSpeed = 2;
+    [SerializeField] public float SpeedIncrease = 0.1f;
+
+    public static LevelHandler Singleton;
 
     public static int playerScore = 0;
     private bool shouldCallScroller = false;
@@ -22,6 +25,10 @@ public class LevelHandler : MonoBehaviour
 
     private Coroutine scroller;
     private float _playerScore = 0;
+
+    private void Awake() {
+        Singleton = this;
+    }
 
     private void Start() {
         scroller = StartCoroutine(Scroller.startScroller());
@@ -55,14 +62,14 @@ public class LevelHandler : MonoBehaviour
         }
 
         PlayerScore.text = $"Score:{playerScore.ToString()}";
-        LaneSpeed.text = $"Speed:{Scroller.moveSpeed}";
+        LaneSpeed.text = $"Speed: X{(Scroller.moveSpeed * 10).ToString("0.00")}";
     }
 
     public void OnPlayerDeathEvent() {
         Debug.Log("Player Died");
         PlayerDead = true;
         Time.timeScale = 0;
-        sceneController.showRecord();
+        sceneController.ShowRecord();
     }
 
     public void OnPlayerCoinEvent(Coin coin) {

@@ -85,7 +85,7 @@ public class PlayerMovement : MonoBehaviour
         // Activate State
         PlayerMovement.Singleton.isJumping = true;
         PlayerActionController.SwitchActions("Air");
-        PlayerMovement.Singleton.rb.AddForce(Vector3.up * (PlayerMovement.Singleton.JumpHeight), ForceMode.Impulse);
+        PlayerMovement.Singleton.rb.velocity += Vector3.up * PlayerMovement.Singleton.JumpHeight;
     }
 
     // public static void PlayerSlide(InputAction.CallbackContext context)
